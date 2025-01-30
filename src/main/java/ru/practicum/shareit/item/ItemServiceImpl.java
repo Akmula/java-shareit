@@ -4,6 +4,9 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.ItemRequestDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.user.UserRepository;
 
 import java.util.ArrayList;
@@ -13,29 +16,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private Integer itemId = 0;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
     @Override
-    public ItemDto createItem(int userId, ItemDto itemDto) {
+    public ItemResponseDto createItem(int userId, ItemRequestDto itemRequestDto) {
 
         if (userRepository.getUserById(userId) == null) {
             throw new NotFoundException("User not found");
         }
 
-        int id = getId();
-        Item createdItem = ItemMapper.dtoToItem(itemDto);
-        createdItem.setId(id);
-        createdItem.setOwnerId(userId);
+        Item createdItem = ItemMapper.dtoToItem(userId, itemRequestDto);
 
         createdItem = itemRepository.addItem(createdItem);
 
-        return ItemMapper.itemToDto(createdItem);
+        return ItemMapper.itemToResponseDto(createdItem);
     }
 
     @Override
-    public ItemDto updateItem(int userId, int itemId, ItemDto itemDto) {
+    public ItemResponseDto updateItem(int userId, int itemId, ItemRequestDto itemRequestDto) {
 
         if (userRepository.getUserById(userId) == null) {
             throw new NotFoundException("User not found");
@@ -49,44 +48,36 @@ public class ItemServiceImpl implements ItemService {
         if (oldItem.getOwnerId() != userId) {
             throw new ValidationException("Item is not owned by user");
         }
-        if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
-            itemDto.setName(oldItem.getName());
+        if (itemRequestDto.getName() == null || itemRequestDto.getName().isEmpty()) {
+            itemRequestDto.setName(oldItem.getName());
         }
-        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
-            itemDto.setDescription(oldItem.getDescription());
+        if (itemRequestDto.getDescription() == null || itemRequestDto.getDescription().isEmpty()) {
+            itemRequestDto.setDescription(oldItem.getDescription());
         }
-        if (itemDto.getAvailable() == null) {
-            itemDto.setAvailable(false);
+        if (itemRequestDto.getAvailable() == null) {
+            itemRequestDto.setAvailable(false);
         }
 
-        itemDto.setId(itemId);
-        itemDto.setOwnerId(userId);
+        Item updatedItem = itemRepository.updateItem(itemId, ItemMapper.dtoToItem(userId, itemRequestDto));
 
-        Item updatedItem = itemRepository.updateItem(ItemMapper.dtoToItem(itemDto));
-
-        return ItemMapper.itemToDto(updatedItem);
+        return ItemMapper.itemToResponseDto(updatedItem);
     }
 
     @Override
-    public ItemDto getItemById(int userId, int itemId) {
-        return ItemMapper.itemToDto(itemRepository.getItemById(itemId));
+    public ItemResponseDto getItemById(int userId, int itemId) {
+        return ItemMapper.itemToResponseDto(itemRepository.getItemById(itemId));
     }
 
     @Override
-    public List<ItemDto> getItems(int userId) {
-        return ItemMapper.itemsToDto(itemRepository.getItems(userId));
+    public List<ItemResponseDto> getItems(int userId) {
+        return ItemMapper.itemsToResponseDto(itemRepository.getItems(userId));
     }
 
     @Override
-    public List<ItemDto> searchItems(int userId, String text) {
+    public List<ItemResponseDto> searchItems(int userId, String text) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return ItemMapper.itemsToDto(itemRepository.searchItems(userId, text.toLowerCase()));
-    }
-
-    private Integer getId() {
-        itemId++;
-        return itemId;
+        return ItemMapper.itemsToResponseDto(itemRepository.searchItems(userId, text.toLowerCase()));
     }
 }

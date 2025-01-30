@@ -9,17 +9,21 @@ import java.util.Map;
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
 
+    private Integer itemId = 0;
     private final Map<Integer, Item> items = new HashMap<>();
 
     @Override
     public Item addItem(Item item) {
-        items.put(item.getId(), item);
+        int id = getId();
+        item.setId(id);
+        items.put(id, item);
         return item;
     }
 
     @Override
-    public Item updateItem(Item item) {
-        items.put(item.getId(), item);
+    public Item updateItem(int itemId, Item item) {
+        item.setId(itemId);
+        items.put(itemId, item);
         return item;
     }
 
@@ -41,5 +45,10 @@ public class ItemRepositoryImpl implements ItemRepository {
                 .filter(item -> item.getName().toLowerCase().contains(text)
                                 || item.getDescription().toLowerCase().contains(text))
                 .toList();
+    }
+
+    private Integer getId() {
+        itemId++;
+        return itemId;
     }
 }

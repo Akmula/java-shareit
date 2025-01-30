@@ -3,9 +3,10 @@ package ru.practicum.shareit.item;
 import java.util.List;
 
 public interface ItemRepository {
+
     Item addItem(Item item);
 
-    Item updateItem(Item item);
+    Item updateItem(int itemId, Item item);
 
     Item getItemById(int itemId);
 

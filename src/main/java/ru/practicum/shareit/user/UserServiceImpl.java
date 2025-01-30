@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.DataDuplicationException;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.List;
@@ -11,17 +10,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private Integer userId = 0;
     private final UserRepository userRepository;
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        if (isExistEmail(userDto.getEmail())) {
-            throw new DataDuplicationException("Email already exists");
-        }
-
-        int id = getId();
-        userDto.setId(id);
         User user = userRepository.addUser(UserMapper.dtoToUser(userDto));
         return UserMapper.userToDto(user);
     }
@@ -37,11 +29,6 @@ public class UserServiceImpl implements UserService {
         User updatedUser = UserMapper.dtoToUser(userDto);
         updatedUser.setId(userId);
 
-        if (!oldUser.getEmail().equals(userDto.getEmail())) {
-            if (isExistEmail(userDto.getEmail())) {
-                throw new DataDuplicationException("Email already exists");
-            }
-        }
         if (userDto.getName() == null) {
             updatedUser.setName(oldUser.getName());
         }
@@ -68,14 +55,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(int userId) {
         userRepository.deleteUser(userId);
-    }
-
-    private Integer getId() {
-        userId++;
-        return userId;
-    }
-
-    private boolean isExistEmail(String email) {
-        return userRepository.getUsers().stream().anyMatch(user -> user.getEmail().equals(email));
     }
 }
