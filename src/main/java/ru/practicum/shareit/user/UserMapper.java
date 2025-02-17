@@ -8,7 +8,7 @@ import java.util.List;
 @Component
 public class UserMapper {
 
-    public static UserDto userToDto(User user) {
+    public static UserDto toUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
@@ -16,15 +16,11 @@ public class UserMapper {
                 .build();
     }
 
-    public static User dtoToUser(UserDto userDto) {
-        return User.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
+    public static User toUser(UserDto userDto) {
+        return new User(userDto.getId(), userDto.getName(), userDto.getEmail());
     }
 
     public static List<UserDto> usersToDto(List<User> users) {
-        return users.stream().map(UserMapper::userToDto).toList();
+        return users.stream().map(UserMapper::toUserDto).toList();
     }
 }
