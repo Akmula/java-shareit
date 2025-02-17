@@ -4,28 +4,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@Table(name = "items")
-public class Item {
+@Table(name = "comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String name;
-    private String description;
-    private boolean available;
+    private String text;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private User user;
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     @ManyToOne
-    @JoinColumn(name = "request_id")
-    private ItemRequest request;
+    @JoinColumn(name = "author_id")
+    private User author;
+    private LocalDateTime created;
 }

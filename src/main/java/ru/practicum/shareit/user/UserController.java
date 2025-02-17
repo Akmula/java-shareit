@@ -19,41 +19,41 @@ public class UserController {
 
     @PostMapping
     public UserDto createUser(@RequestBody @Valid UserDto userDto) {
-        log.info("Creating user: {}", userDto);
+        log.info("Добавление пользователя: {}", userDto);
         UserDto createdUserDto = userService.createUser(userDto);
-        log.info("Created user: {}", createdUserDto);
+        log.info("Добавлен пользователь: {}", createdUserDto);
         return createdUserDto;
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable int userId,
+    public UserDto updateUser(@PathVariable Integer userId,
                               @RequestBody UserDto userDto) {
-        log.info("Updating user: {}", userDto);
+        log.info("Обновление пользователя: {}", userDto);
         UserDto updatingUserDto = userService.updateUser(userId, userDto);
-        log.info("Updated user: {}", updatingUserDto);
+        log.info("Обновлен пользователь: {}", updatingUserDto);
         return updatingUserDto;
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable int userId) {
-        log.info("Getting user: {}", userId);
+        log.info("Получение пользователя по id: {}", userId);
         UserDto gettingUserDto = userService.getUserById(userId);
-        log.info("Getted user: {}", gettingUserDto);
+        log.info("Получен пользователь: {}", gettingUserDto);
         return gettingUserDto;
     }
 
     @GetMapping
     public List<UserDto> getAllUsers() {
-        log.info("Getting all users");
+        log.info("Получение всех пользователей");
         List<UserDto> allUsersDto = userService.getUsers();
-        log.info("Getted all users: {}", allUsersDto);
+        log.info("Получены пользователи: {}", allUsersDto);
         return allUsersDto;
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable int userId) {
-        log.info("Deleting user: {}", userId);
+        log.info("Удаление пользователя с id: {}", userId);
         userService.deleteUser(userId);
-        log.info("Deleted user: {}", userId);
+        log.info("Удален пользователь: {}", userId);
     }
 }

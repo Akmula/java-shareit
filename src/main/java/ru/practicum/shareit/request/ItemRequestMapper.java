@@ -7,25 +7,20 @@ import java.util.List;
 @Component
 public class ItemRequestMapper {
 
-    public ItemRequestDto itemRequestDto(ItemRequest itemRequest) {
+    public ItemRequestDto toDto(ItemRequest itemRequest) {
         return ItemRequestDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
-                .requestorId(itemRequest.getRequestorId())
-                .createdTime(itemRequest.getCreatedTime())
+                .requestorId(itemRequest.getRequester().getId())
+                .createdTime(itemRequest.getCreated())
                 .build();
     }
 
-    public ItemRequest dtoToUser(ItemRequestDto itemRequestDto) {
-        return ItemRequest.builder()
-                .id(itemRequestDto.getId())
-                .description(itemRequestDto.getDescription())
-                .requestorId(itemRequestDto.getRequestorId())
-                .createdTime(itemRequestDto.getCreatedTime())
-                .build();
+    public ItemRequest toItemRequest(ItemRequestDto itemRequestDto) {
+        return new ItemRequest();
     }
 
     public List<ItemRequestDto> itemRequestsToDto(List<ItemRequest> itemRequests) {
-        return itemRequests.stream().map(this::itemRequestDto).toList();
+        return itemRequests.stream().map(this::toDto).toList();
     }
 }
