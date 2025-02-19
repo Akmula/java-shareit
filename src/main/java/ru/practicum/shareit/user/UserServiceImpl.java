@@ -14,12 +14,13 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Override
     public UserDto createUser(UserDto userDto) {
         checkEmail(userDto);
-        User user = userRepository.save(UserMapper.toUser(userDto));
-        return UserMapper.toUserDto(user);
+        User user = userRepository.save(userMapper.toUser(userDto));
+        return userMapper.toUserDto(user);
     }
 
     @Override
@@ -38,17 +39,17 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userRepository.save(oldUser);
-        return UserMapper.toUserDto(user);
+        return userMapper.toUserDto(user);
     }
 
     @Override
     public UserDto getUserById(int userId) {
-        return UserMapper.toUserDto(getUser(userId));
+        return userMapper.toUserDto(getUser(userId));
     }
 
     @Override
     public List<UserDto> getUsers() {
-        return UserMapper.usersToDto(userRepository.findAll());
+        return userMapper.usersToDto(userRepository.findAll());
     }
 
     @Override

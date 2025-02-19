@@ -25,12 +25,15 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
+    private final ItemMapper itemMapper;
+    private final BookingMapper bookingMapper;
+    private final CommentMapper commentMapper;
 
     @Override
     public CreatedItemDtoResponse createItem(int userId, ItemDtoRequest itemDtoRequest) {
         User user = getUser(userId);
-        Item createdItem = itemRepository.save(ItemMapper.dtoToItem(itemDtoRequest, user, null));
-        return ItemMapper.createdItemDtoResponse(createdItem);
+        Item createdItem = itemRepository.save(itemMapper.dtoToItem(itemDtoRequest, user, null));
+        return itemMapper.createdItemDtoResponse(createdItem);
     }
 
     @Override
@@ -51,28 +54,28 @@ public class ItemServiceImpl implements ItemService {
             itemDtoRequest.setAvailable(oldItem.isAvailable());
         }
 
-        Item updatedItem = itemRepository.save(ItemMapper.dtoToItem(itemDtoRequest, oldUser, itemId));
+        Item updatedItem = itemRepository.save(itemMapper.dtoToItem(itemDtoRequest, oldUser, itemId));
 
-        return ItemMapper.itemToDtoResponse(updatedItem);
+        return itemMapper.itemToDtoResponse(updatedItem);
     }
 
     @Override
     public ItemDto getItemById(int userId, int itemId) {
         getUser(userId);
         Item item = getItem(itemId);
-        ItemDtoResponse itemDtoResponse = ItemMapper.itemToDtoResponse(item);
+        ItemDtoResponse itemResponse = itemMapper.itemToDtoResponse(item);
 
-        List<CommentDtoResponse> commentDtoResponses = commentRepository.getAllCommentsByItemId(itemId)
+        List<CommentDtoResponse> commentResponses = commentRepository.getAllCommentsByItemId(itemId)
                 .stream()
-                .map(CommentMapper::commentToDtoResponse)
+                .map(commentMapper::commentToDtoResponse)
                 .toList();
 
         Booking nextBooking = getNextBooking(userId);
         Booking lastBooking = getLastBooking(userId);
 
-        return ItemMapper.toItemDto(userId, itemDtoResponse, commentDtoResponses,
-                BookingMapper.toItemBookingDto(nextBooking),
-                BookingMapper.toItemBookingDto(lastBooking));
+        return itemMapper.toItemDto(userId, itemResponse, commentResponses,
+                bookingMapper.toItemBookingDto(nextBooking),
+                bookingMapper.toItemBookingDto(lastBooking));
 
     }
 
@@ -83,18 +86,18 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> itemsDto = new ArrayList<>();
 
         for (Item item : items) {
-            ItemDtoResponse itemDtoResponse = ItemMapper.itemToDtoResponse(item);
-            List<CommentDtoResponse> commentDtoResponses = commentRepository.getAllCommentsByItemId(item.getId())
+            ItemDtoResponse itemResponse = itemMapper.itemToDtoResponse(item);
+            List<CommentDtoResponse> commentResponses = commentRepository.getAllCommentsByItemId(item.getId())
                     .stream()
-                    .map(CommentMapper::commentToDtoResponse)
+                    .map(commentMapper::commentToDtoResponse)
                     .toList();
 
             Booking nextBooking = getNextBooking(userId);
             Booking lastBooking = getLastBooking(userId);
 
-            ItemDto itemDto = ItemMapper.toItemDto(userId, itemDtoResponse, commentDtoResponses,
-                    BookingMapper.toItemBookingDto(nextBooking),
-                    BookingMapper.toItemBookingDto(lastBooking));
+            ItemDto itemDto = itemMapper.toItemDto(userId, itemResponse, commentResponses,
+                    bookingMapper.toItemBookingDto(nextBooking),
+                    bookingMapper.toItemBookingDto(lastBooking));
             itemsDto.add(itemDto);
         }
         return itemsDto;
@@ -108,7 +111,7 @@ public class ItemServiceImpl implements ItemService {
         List<Item> items = itemRepository.search(text);
 
         return items.stream()
-                .map(ItemMapper::itemToDtoResponse)
+                .map(itemMapper::itemToDtoResponse)
                 .collect(Collectors.toList());
     }
 
@@ -134,10 +137,10 @@ public class ItemServiceImpl implements ItemService {
                                           " или срок бронирования не истек!");
         }
 
-        Comment comment = CommentMapper.dtoToComment(commentDtoRequest, item, user);
+        Comment comment = commentMapper.dtoToComment(commentDtoRequest, item, user);
         comment.setCreated(LocalDateTime.now());
 
-        return CommentMapper.commentToDtoResponse(commentRepository.save(comment));
+        return commentMapper.commentToDtoResponse(commentRepository.save(comment));
     }
 
     private User getUser(int userId) {

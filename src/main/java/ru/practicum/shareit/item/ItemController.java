@@ -19,38 +19,38 @@ public class ItemController {
 
     @PostMapping
     public CreatedItemDtoResponse createItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                                             @Valid @RequestBody ItemDtoRequest itemRequestDto) {
-        log.info("Добавление предмета: {}", itemRequestDto);
-        CreatedItemDtoResponse createdItemDtoResponse = itemService.createItem(userId, itemRequestDto);
-        log.info("Добавлен предмет: {}", createdItemDtoResponse);
-        return createdItemDtoResponse;
+                                             @Valid @RequestBody ItemDtoRequest itemRequest) {
+        log.info("Добавление предмета: {}", itemRequest);
+        CreatedItemDtoResponse createdItem = itemService.createItem(userId, itemRequest);
+        log.info("Добавлен предмет: {}", createdItem);
+        return createdItem;
     }
 
     @PatchMapping("/{itemId}")
     public ItemDtoResponse updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
                                       @PathVariable int itemId,
-                                      @RequestBody ItemDtoRequest itemRequestDto) {
-        log.info("Обновление предмета: {}", itemRequestDto);
-        ItemDtoResponse itemResponseDto = itemService.updateItem(userId, itemId, itemRequestDto);
-        log.info("Обновлен предмет: {}", itemResponseDto);
-        return itemResponseDto;
+                                      @RequestBody ItemDtoRequest itemRequest) {
+        log.info("Обновление предмета: {}", itemRequest);
+        ItemDtoResponse itemResponse = itemService.updateItem(userId, itemId, itemRequest);
+        log.info("Обновлен предмет: {}", itemResponse);
+        return itemResponse;
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") int userId,
                                @PathVariable int itemId) {
         log.info("Получение предмета по id: {}", itemId);
-        ItemDto itemDto = itemService.getItemById(userId, itemId);
-        log.info("Получен предмет id: {}", itemDto);
-        return itemDto;
+        ItemDto item = itemService.getItemById(userId, itemId);
+        log.info("Получен предмет id: {}", item);
+        return item;
     }
 
     @GetMapping
     public List<ItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") int userId) {
         log.info("Получение списка всех предметов по id: {}", userId);
-        List<ItemDto> itemsResponseDto = itemService.getItems(userId);
-        log.info("Получен список предметов: {}", itemsResponseDto);
-        return itemsResponseDto;
+        List<ItemDto> itemsResponse = itemService.getItems(userId);
+        log.info("Получен список предметов: {}", itemsResponse);
+        return itemsResponse;
     }
 
     @GetMapping("/search")
@@ -65,9 +65,9 @@ public class ItemController {
     @PostMapping("/{itemId}/comment")
     public CommentDtoResponse addComment(@RequestHeader("X-Sharer-User-Id") int userId,
                                          @PathVariable int itemId,
-                                         @Valid @RequestBody CommentDtoRequest commentDtoRequest) {
+                                         @Valid @RequestBody CommentDtoRequest commentRequest) {
         log.info("Добавление комментария к предмету с id: {}", itemId);
-        CommentDtoResponse comment = itemService.addComment(userId, itemId, commentDtoRequest);
+        CommentDtoResponse comment = itemService.addComment(userId, itemId, commentRequest);
         log.info("Добавлен комментарий {}", comment);
         return comment;
     }

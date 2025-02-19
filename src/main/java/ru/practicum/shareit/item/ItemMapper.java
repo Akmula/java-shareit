@@ -9,19 +9,17 @@ import java.util.List;
 @Component
 public class ItemMapper {
 
-    public static Item dtoToItem(ItemDtoRequest itemDtoRequest, User user, Integer itemId) {
-        Item item = new Item();
-        if (itemId != null) {
-            item.setId(itemId);
-        }
-        item.setName(itemDtoRequest.getName());
-        item.setDescription(itemDtoRequest.getDescription());
-        item.setAvailable(itemDtoRequest.getAvailable());
-        item.setUser(user);
-        return item;
+    public Item dtoToItem(ItemDtoRequest itemDtoRequest, User user, Integer itemId) {
+        return Item.builder()
+                .id(itemId)
+                .name(itemDtoRequest.getName())
+                .description(itemDtoRequest.getDescription())
+                .available(itemDtoRequest.getAvailable())
+                .user(user)
+                .build();
     }
 
-    public static ItemDtoResponse itemToDtoResponse(Item item) {
+    public ItemDtoResponse itemToDtoResponse(Item item) {
         return ItemDtoResponse.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -31,7 +29,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static CreatedItemDtoResponse createdItemDtoResponse(Item item) {
+    public CreatedItemDtoResponse createdItemDtoResponse(Item item) {
         return CreatedItemDtoResponse.builder()
                 .id(item.getId())
                 .name(item.getName())
@@ -40,8 +38,8 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDto toItemDto(int userId, ItemDtoResponse item, List<CommentDtoResponse> comments,
-                                    BookingDtoForItem nextBooking, BookingDtoForItem lastBooking) {
+    public ItemDto toItemDto(int userId, ItemDtoResponse item, List<CommentDtoResponse> comments,
+                             BookingDtoForItem nextBooking, BookingDtoForItem lastBooking) {
         ItemDto itemDto = ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())

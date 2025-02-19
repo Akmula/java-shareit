@@ -1,9 +1,7 @@
 package ru.practicum.shareit.item;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
@@ -11,6 +9,9 @@ import ru.practicum.shareit.user.User;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "items")
 public class Item {
 

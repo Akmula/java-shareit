@@ -21,55 +21,53 @@ public class BookingController {
     public BookingDtoResponse createBooking(@RequestHeader("X-Sharer-User-Id") int userId,
                                             @Valid @RequestBody BookingDtoRequest bookingDtoRequest) {
         log.info("Бронирование предмета: {}", bookingDtoRequest);
-        BookingDtoResponse bookingDtoResponse = bookingService.createBooking(userId, bookingDtoRequest);
-        log.info("Предмет: {} - забронирована", bookingDtoResponse);
-        return bookingDtoResponse;
+        BookingDtoResponse bookingResponse = bookingService.createBooking(userId, bookingDtoRequest);
+        log.info("Предмет: {} - забронирована", bookingResponse);
+        return bookingResponse;
     }
 
     @PatchMapping("/{bookingId}")
     public BookingDtoResponse approvedBooking(@RequestHeader("X-Sharer-User-Id") int userId,
                                               @PathVariable int bookingId,
-                                              @RequestParam Boolean approved) {
+                                              @RequestParam boolean approved) {
         if (approved) {
             log.info("Подтверждение бронирования предмета владельцем: {}", userId);
         } else {
             log.info("Отклонение бронирования предмета владельцем: {}", userId);
         }
-        BookingDtoResponse bookingDtoResponse = bookingService.approvedBooking(userId, bookingId, approved);
+        BookingDtoResponse bookingResponse = bookingService.approvedBooking(userId, bookingId, approved);
         if (approved) {
-            log.info("Бронирование: {} - подтверждено", bookingDtoResponse);
+            log.info("Бронирование: {} - подтверждено", bookingResponse);
         } else {
-            log.info("Бронирование: {} - отклонено", bookingDtoResponse);
+            log.info("Бронирование: {} - отклонено", bookingResponse);
         }
-        return bookingDtoResponse;
+        return bookingResponse;
     }
 
     @GetMapping("/{bookingId}")
     public BookingDtoResponse getBookingById(@RequestHeader("X-Sharer-User-Id") int userId,
                                              @PathVariable int bookingId) {
         log.info("Получение данных о бронировании с id: {}", bookingId);
-        BookingDtoResponse bookingDtoResponse = bookingService.getBookingById(userId, bookingId);
-        log.info("Получены данные о бронировании: {}", bookingDtoResponse);
-        return bookingDtoResponse;
+        BookingDtoResponse bookingResponse = bookingService.getBookingById(userId, bookingId);
+        log.info("Получены данные о бронировании: {}", bookingResponse);
+        return bookingResponse;
     }
 
     @GetMapping
     public List<BookingDtoResponse> getBookingsByBooker(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                        @RequestParam(defaultValue = "ALL") String state) {
+                                                        @RequestParam(defaultValue = "ALL") State state) {
         log.info("Получение списка всех бронирований текущего пользователя c id: {}, со статусом - {}.", userId, state);
-        List<BookingDtoResponse> bookingDtoResponses = bookingService
-                .getBookingsByBooker(userId, state);
-        log.info("Получен список всех бронирований: {}", bookingDtoResponses);
-        return bookingDtoResponses;
+        List<BookingDtoResponse> bookingResponses = bookingService.getBookingsByBooker(userId, state);
+        log.info("Получен список всех бронирований: {}", bookingResponses);
+        return bookingResponses;
     }
 
     @GetMapping("/owner")
     public List<BookingDtoResponse> getBookingsByOwner(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                       @RequestParam(defaultValue = "ALL") String state) {
+                                                       @RequestParam(defaultValue = "ALL") State state) {
         log.info("Получение списка бронирований пользователя c id: {}, со статусом - {}.", userId, state);
-        List<BookingDtoResponse> bookingDtoResponses = bookingService
-                .getBookingsByOwner(userId, state);
-        log.info("Получен список бронирований: {}", bookingDtoResponses);
-        return bookingDtoResponses;
+        List<BookingDtoResponse> bookingResponses = bookingService.getBookingsByOwner(userId, state);
+        log.info("Получен список бронирований: {}", bookingResponses);
+        return bookingResponses;
     }
 }

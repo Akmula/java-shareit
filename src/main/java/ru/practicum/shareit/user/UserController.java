@@ -18,36 +18,36 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public UserDto createUser(@RequestBody @Valid UserDto userDto) {
-        log.info("Добавление пользователя: {}", userDto);
-        UserDto createdUserDto = userService.createUser(userDto);
-        log.info("Добавлен пользователь: {}", createdUserDto);
-        return createdUserDto;
+    public UserDto createUser(@RequestBody @Valid UserDto user) {
+        log.info("Добавление пользователя: {}", user);
+        UserDto createdUser = userService.createUser(user);
+        log.info("Добавлен пользователь: {}", createdUser);
+        return createdUser;
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable Integer userId,
-                              @RequestBody UserDto userDto) {
-        log.info("Обновление пользователя: {}", userDto);
-        UserDto updatingUserDto = userService.updateUser(userId, userDto);
-        log.info("Обновлен пользователь: {}", updatingUserDto);
-        return updatingUserDto;
+                              @RequestBody UserDto user) {
+        log.info("Обновление пользователя: {}", user);
+        UserDto updatingUser = userService.updateUser(userId, user);
+        log.info("Обновлен пользователь: {}", updatingUser);
+        return updatingUser;
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable int userId) {
         log.info("Получение пользователя по id: {}", userId);
-        UserDto gettingUserDto = userService.getUserById(userId);
-        log.info("Получен пользователь: {}", gettingUserDto);
-        return gettingUserDto;
+        UserDto gettingUser = userService.getUserById(userId);
+        log.info("Получен пользователь: {}", gettingUser);
+        return gettingUser;
     }
 
     @GetMapping
     public List<UserDto> getAllUsers() {
         log.info("Получение всех пользователей");
-        List<UserDto> allUsersDto = userService.getUsers();
-        log.info("Получены пользователи: {}", allUsersDto);
-        return allUsersDto;
+        List<UserDto> allUsers = userService.getUsers();
+        log.info("Получены пользователи: {}", allUsers);
+        return allUsers;
     }
 
     @DeleteMapping("/{userId}")
