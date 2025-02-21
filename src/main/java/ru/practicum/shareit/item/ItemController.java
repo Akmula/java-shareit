@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemRequestDto;
-import ru.practicum.shareit.item.dto.ItemResponseDto;
 
 import java.util.List;
 
@@ -20,47 +18,57 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemResponseDto createItem(@RequestHeader("X-Sharer-User-Id") int userId,
-                                      @Valid @RequestBody ItemRequestDto itemRequestDto) {
-        log.info("Creating new item: {}", itemRequestDto);
-        ItemResponseDto itemResponseDto = itemService.createItem(userId, itemRequestDto);
-        log.info("Created new item: {}", itemResponseDto);
-        return itemResponseDto;
+    public CreatedItemDtoResponse createItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                                             @Valid @RequestBody ItemDtoRequest itemRequest) {
+        log.info("Добавление предмета: {}", itemRequest);
+        CreatedItemDtoResponse createdItem = itemService.createItem(userId, itemRequest);
+        log.info("Добавлен предмет: {}", createdItem);
+        return createdItem;
     }
 
     @PatchMapping("/{itemId}")
-    public ItemResponseDto updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
+    public ItemDtoResponse updateItem(@RequestHeader("X-Sharer-User-Id") int userId,
                                       @PathVariable int itemId,
-                                      @RequestBody ItemRequestDto itemRequestDto) {
-        log.info("Updating existing item: {}", itemRequestDto);
-        ItemResponseDto itemResponseDto = itemService.updateItem(userId, itemId, itemRequestDto);
-        log.info("Updating existing item: {}", itemResponseDto);
-        return itemResponseDto;
+                                      @RequestBody ItemDtoRequest itemRequest) {
+        log.info("Обновление предмета: {}", itemRequest);
+        ItemDtoResponse itemResponse = itemService.updateItem(userId, itemId, itemRequest);
+        log.info("Обновлен предмет: {}", itemResponse);
+        return itemResponse;
     }
 
     @GetMapping("/{itemId}")
-    public ItemResponseDto getItemById(@RequestHeader("X-Sharer-User-Id") int userId,
-                                       @PathVariable int itemId) {
-        log.info("Getting item by id: {}", itemId);
-        ItemResponseDto itemResponseDto = itemService.getItemById(userId, itemId);
-        log.info("Getting item by id: {}", itemResponseDto);
-        return itemResponseDto;
+    public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") int userId,
+                               @PathVariable int itemId) {
+        log.info("Получение предмета по id: {}", itemId);
+        ItemDto item = itemService.getItemById(userId, itemId);
+        log.info("Получен предмет id: {}", item);
+        return item;
     }
 
     @GetMapping
-    public List<ItemResponseDto> getAllItems(@RequestHeader("X-Sharer-User-Id") int userId) {
-        log.info("Getting all items");
-        List<ItemResponseDto> itemsResponseDto = itemService.getItems(userId);
-        log.info("Getting all items");
-        return itemsResponseDto;
+    public List<ItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") int userId) {
+        log.info("Получение списка всех предметов по id: {}", userId);
+        List<ItemDto> itemsResponse = itemService.getItems(userId);
+        log.info("Получен список предметов: {}", itemsResponse);
+        return itemsResponse;
     }
 
     @GetMapping("/search")
-    public List<ItemResponseDto> searchItems(@RequestHeader("X-Sharer-User-Id") int userId,
+    public List<ItemDtoResponse> searchItems(@RequestHeader("X-Sharer-User-Id") int userId,
                                              @RequestParam String text) {
-        log.info("Searching for items with text {}", text);
-        List<ItemResponseDto> searchItems = itemService.searchItems(userId, text);
-        log.info("Searching for items with text {}", searchItems);
+        log.info("Поиск предметов по запросу: {}", text);
+        List<ItemDtoResponse> searchItems = itemService.searchItems(userId, text);
+        log.info("Получен список предметов по запросу: {}", searchItems);
         return searchItems;
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoResponse addComment(@RequestHeader("X-Sharer-User-Id") int userId,
+                                         @PathVariable int itemId,
+                                         @Valid @RequestBody CommentDtoRequest commentRequest) {
+        log.info("Добавление комментария к предмету с id: {}", itemId);
+        CommentDtoResponse comment = itemService.addComment(userId, itemId, commentRequest);
+        log.info("Добавлен комментарий {}", comment);
+        return comment;
     }
 }
